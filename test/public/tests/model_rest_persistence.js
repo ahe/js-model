@@ -317,7 +317,6 @@ test("load with nested resource", function() {
 
   Post.persistence.load(Post, function(success, xhr, data) {
     ok(success);
-		alert(data);
 		equals(data.length, 2, "data should contains two records (raw data)")
     start();
   });

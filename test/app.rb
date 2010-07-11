@@ -13,6 +13,11 @@ get '/posts' do
                  { :id => 2, :title => 'Bar amended', :body => '...', :foo => 'bar' }])
 end
 
+get '/posts_named' do
+  JSON.generate([{ "post" => { :id => 1, :title => 'Foo amended', :body => '...', :foo => 'bar' }},
+                 { "post" => { :id => 2, :title => 'Bar amended', :body => '...', :foo => 'bar' }}])
+end
+
 get '/posts/1/comments' do
   JSON.generate([{ :id => 1, :author => 'foo' },
                  { :id => 2, :author => 'bar' }])

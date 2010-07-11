@@ -226,3 +226,18 @@ test("load", function() {
     start();
   });
 });
+
+test("load named resource", function() {
+  var Post = Model("post", {
+    persistence: Model.RestPersistence("/posts_named")
+  });
+
+  stop();
+
+  Post.load(function(success) {
+    ok(success);
+		equals(Post.all().length, 2, "two records should have been added to the collection")
+		equals(Post.first().attr('title'), "Foo amended", "attributes should have been set")
+    start();
+  });
+});
