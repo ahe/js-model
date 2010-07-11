@@ -285,6 +285,51 @@ test("destroy - 422 response (failed validations)", function() {
   });
 });
 
+test("load", function() {
+  var Post = Model("post", {
+    persistence: Model.RestPersistence("/posts")
+  });
+
+  AjaxSpy.start();
+  stop();
+
+  Post.persistence.load(Post, function(success, xhr, data) {
+    ok(success);
+		equals(data.length, 2, "data should contains two records (raw data)")
+    start();
+  });
+
+  equals(AjaxSpy.requests.length, 1, "one request should have been made");
+
+  var request = AjaxSpy.requests.shift();
+  
+  equals(request.type, "GET");
+  equals(request.url, "/posts");
+});
+
+test("load with nested resource", function() {
+  var Post = Model("post", {
+    persistence: Model.RestPersistence("/posts/1/comments")
+  });
+
+  AjaxSpy.start();
+  stop();
+
+  Post.persistence.load(Post, function(success, xhr, data) {
+    ok(success);
+		alert(data);
+		equals(data.length, 2, "data should contains two records (raw data)")
+    start();
+  });
+
+  equals(AjaxSpy.requests.length, 1, "one request should have been made");
+
+  var request = AjaxSpy.requests.shift();
+  
+  equals(request.type, "GET");
+  equals(request.url, "/posts/1/comments");
+});
+
 test("events", function() {
   var Post = Model("post", {
     persistence: Model.RestPersistence("/posts")

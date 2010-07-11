@@ -212,3 +212,17 @@ test("Custom method with chaining, then more chaining", function() {
   equals(Post.not_first().not_last().last(), post3,
     "custom methods should be available after chaining");
 });
+
+test("load", function() {
+  var Post = Model("post", {
+    persistence: Model.RestPersistence("/posts")
+  });
+
+  stop();
+
+  Post.load(function(success) {
+    ok(success);
+		equals(Post.all().length, 2, "two records should have been added to the collection")
+    start();
+  });
+});
