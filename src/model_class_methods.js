@@ -23,6 +23,19 @@ Model.ClassMethods = {
     return this.collection;
   },
 
+	load: function(callback) {
+		this.persistence.load(this, function(success, xhr, data) {
+			for(i=0; i < data.length; i++) {
+				if(data[i][this._name]) {
+					this.add(new this(data[i][this._name]));
+				} else {
+					this.add(new this(data[i]));
+				}
+			}
+			callback.call(this, success);
+	  });
+	},
+
   count: function() {
     return this.collection.length;
   },

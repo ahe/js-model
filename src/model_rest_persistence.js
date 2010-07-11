@@ -17,6 +17,14 @@ Model.RestPersistence = function(resource, methods) {
 			});
 			return path;
 		},
+		
+		load: function(model, callback) {
+      return this.xhr('GET', this.load_path(), model, callback);
+    },
+
+    load_path: function() {
+      return this.path();
+    },
 
     create: function(model, callback) {
       return this.xhr('POST', this.create_path(model), model, callback);
@@ -67,7 +75,7 @@ Model.RestPersistence = function(resource, methods) {
 
     xhr: function(method, url, model, callback) {
       var self = this;
-      var data = method === "DELETE" ? null : this.params(model);
+      var data = method === "DELETE" || method == "GET" ? null : this.params(model);
 
       return jQuery.ajax({
         type: method,
@@ -83,11 +91,12 @@ Model.RestPersistence = function(resource, methods) {
     xhrComplete: function(xhr, textStatus, model, callback) {
       var data = this.parseResponseData(xhr);
       var success = textStatus === "success";
-
       if (data) {
         if (success) {
-          // Remote data is the definitive source, update model.
-          model.attr(data);
+					if(!_.isArray(data)) {
+						// Remote data is the definitive source, update model.
+	          model.attr(data);
+					}
         } else if (xhr.status === 422) {
           // Rails' preferred failed validation response code, assume these
           // are errors and replace current model errors with them.
@@ -101,7 +110,7 @@ Model.RestPersistence = function(resource, methods) {
         }
       }
 
-      if (callback) callback.call(model, success, xhr);
+      if (callback) callback.call(model, success, xhr, data);
     }
   }, methods);
 
